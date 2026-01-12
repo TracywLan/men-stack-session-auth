@@ -1,0 +1,24 @@
+#MEN Stack Session Auth
+
+
+##What is Authentication
+At its core, authentication is the process of verifying a user’s identity. It’s like asking, “Are you really who you claim to be?” In practical terms, this involves implementing a system where users can create an account with a username and password. Then, whenever they wish to access certain features or data on our site, they must provide the correct password to prove their identity and continue.
+
+##Why use Authentication
+As our applications grow more complex, with databases and relationships, it becomes vital to ensure that users can interact only with data that’s relevant to their account. This is where authentication plays a critical role. It’s the logic that identifies users, granting them access to create, view, or modify content specific to their profile. Without authentication, we risk exposing sensitive data or allowing unauthorized modifications, which could compromise the integrity and security of our application and its users.
+
+
+##process.env.what ?
+You probably noticed a new port variable we’re defining and using in the app.listen statement. This will come in handy when we’re deploying our applications and cannot know in advance which port the hosting service will use.
+
+The syntax commonly used to set this variable is a ternary statement, which is essentially a condensed if...else statement. You could replace it with the following:
+
+`let port;
+if (process.env.PORT) {
+  port = process.env.PORT;
+} else {
+  port = 3000;
+}
+`
+
+The ternary statement decides which value to assign to the variable. If the process.env.PORT variable is defined and has a ‘truthy’ value, then that value is set as the port number. Otherwise, if it’s ‘falsy’ (undefined or holding no value), the default port 3000 is used. This way, we get to use the environment variable in a hosted environment, and still use 3000 when running the application locally.
