@@ -15,7 +15,11 @@ const authController = require("./controllers/auth.js");
 // express-session module
 const session = require('express-session');
 // mongostore
-const MongoStore = require("connect-mongo");
+const MongoDBStore = require('connect-mongodb-session')(session);
+const store = new MongoDBStore({
+  uri: process.env.MONGODB_URI,
+  collection: 'sessions'  // Creates a "sessions" collection
+});
 
 
 
@@ -40,16 +44,15 @@ app.use(
   })
 );
 // mongostore
-// app.use(
-//   session({
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: true,
-//     store: MongoStore.create({
-//       mongoUrl: process.env.MONGODB_URI,
-//     }),
-//   })
-// );
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: store,  // ← Pass the store instance
+  })
+);
 
 
 
@@ -57,7 +60,7 @@ app.use(
 
 app.get("/", (req, res) => {
   res.render("index.ejs", {
-    user: req.session.user,
+    user: req.session.user, // check if user is logged in
   });
 });
 
@@ -73,6 +76,8 @@ app.get("/vip-lounge", (req, res) => {
     res.send("Sorry, no guests allowed.");
   }
 });
+
+
 
 // Port
 

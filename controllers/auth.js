@@ -26,6 +26,16 @@ router.post("/sign-up", (async(req, res)=>{  // controller for posting in sign-u
 
     const user = await User.create(req.body);
     res.send(`Thanks for signing up ${user.username}`);
+
+    // sign-in user after register
+    req.session.user = {
+        username: user.username,
+    };
+
+    req.session.save(() => {
+        res.redirect("/");
+    });
+
     
 }))
 
@@ -58,12 +68,17 @@ router.post("/sign-in", async (req, res) => {
     _id: userInDatabase._id
   };
 
+  req.session.save(() => {   // change to async to avoid race condition
   res.redirect("/");
+});
 });
 
 router.get("/sign-out", (req, res) => {
-  res.send("The user wants out!");
+  req.session.destroy(() => {
+  res.redirect("/");
 });
+});
+
 
 
 module.exports = router;
