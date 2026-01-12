@@ -20,6 +20,7 @@ const store = new MongoDBStore({
   uri: process.env.MONGODB_URI,
   collection: 'sessions'  // Creates a "sessions" collection
 });
+const isSignedIn = require("./middleware/is-signed-in.js");
 
 
 
@@ -69,13 +70,24 @@ app.get("/", (req, res) => {
 app.use("/auth", authController);
 
 
-app.get("/vip-lounge", (req, res) => {
-  if (req.session.user) {
-    res.send(`Welcome to the party ${req.session.user.username}.`);
-  } else {
-    res.send("Sorry, no guests allowed.");
-  }
+
+app.get("/vip-lounge", isSignedIn, (req, res) => {
+  res.send(`Welcome to the party ${req.session.user.username}.`);
 });
+
+
+// app.use(
+//   "/vip-lounge",
+//   (req, res, next) => {
+//     if (req.session.user) {
+//       res.locals.user = req.session.user; // Store user info for use in the next function
+//       next(); // Proceed to the next middleware or controller
+//     } else {
+//       res.redirect("/"); // Redirect unauthenticated users
+//     }
+//   },
+//   vipsController // The controller handling the '/vip-lounge' route
+// );
 
 
 
